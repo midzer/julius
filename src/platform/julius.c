@@ -538,7 +538,7 @@ static void setup(const julius_args *args)
 #ifdef __vita__
     const char *base_dir = VITA_PATH_PREFIX;
 #else
-    const char *base_dir = args->data_directory;
+    const char *base_dir = "Exe";
 #endif
 
     if (!pre_init(base_dir)) {
