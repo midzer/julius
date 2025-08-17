@@ -659,31 +659,6 @@ set(SOURCE_FILES
     ${EMSCRIPTEN_FILES}
 )
 
-if(${TARGET_PLATFORM} STREQUAL "emscripten")
-    set(USE_FLAGS "-flto -O3 -fno-rtti -fno-exceptions -s USE_SDL=2 -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS=[\"mp3\"] -s USE_MPG123=1")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS}")
-else()
-    function(GET_SDL_EXT_DIR result module)
-        if(NOT module STREQUAL "")
-            set(module "_${module}")
-        endif()
-        set(SDL_LOCATION ${PROJECT_SOURCE_DIR}/ext/SDL2)
-        file(GLOB children
-            RELATIVE ${SDL_LOCATION}
-            CONFIGURE_DEPENDS
-            ${SDL_LOCATION}/SDL${module}
-            ${SDL_LOCATION}/SDL2${module}
-            ${SDL_LOCATION}/SDL${module}-*
-            ${SDL_LOCATION}/SDL2${module}-*
-        )
-        foreach(child ${children})
-            if(IS_DIRECTORY "${SDL_LOCATION}/${child}")
-                set(${result} "${SDL_LOCATION}/${child}" PARENT_SCOPE)
-                break()
-            endif()
-        endforeach()
-    endfunction()
 function(GET_SDL_EXT_DIR result module)
     if(NOT module STREQUAL "")
         set(module "_${module}")
@@ -725,8 +700,8 @@ elseif(${TARGET_PLATFORM} STREQUAL "ios")
         SDL2_mixer
     )
 else()
-    find_package(SDL2 REQUIRED)
-    find_package(SDL2_mixer REQUIRED)
+    find_package(SDL2)
+    find_package(SDL2_mixer)
 endif()
 
 if(${TARGET_PLATFORM} STREQUAL "android")
@@ -954,7 +929,6 @@ else()
         )
     endif()
 
-    target_link_libraries(${SHORT_NAME} ${SDL2_LIBRARY} ${SDL2_MIXER_LIBRARY})
     if(NOT APPLE AND NOT ${TARGET_PLATFORM} STREQUAL "android")
         install(TARGETS ${SHORT_NAME} RUNTIME DESTINATION bin)
     endif()
