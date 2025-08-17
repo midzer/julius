@@ -12,5 +12,5 @@ emmake make
 ## Link
 
 ```
-emcc -flto -O3 -fno-rtti -fno-exceptions */*.o */*/*.o -o index.html -s USE_SDL=2 -s USE_SDL_MIXER=2 -s SDL2_MIXER_FORMATS=[\"mp3\"] -s USE_MPG123=1 -s USE_LIBPNG -sINITIAL_MEMORY=512mb -sENVIRONMENT=web --preload-file Exe/ --closure 1 -sEXPORTED_RUNTIME_METHODS=['allocate']
+emcc -flto -O3 -fno-rtti -fno-exceptions */*.o */*/*.o -o index.html -sUSE_SDL=2 -sUSE_SDL_MIXER=2 -sSDL2_MIXER_FORMATS=[\"mp3\"] -sUSE_MPG123=1 -sUSE_LIBPNG -lidbfs.js -sENVIRONMENT=web --preload-file Exe/ -sEXPORTED_RUNTIME_METHODS=['allocate'] -sINITIAL_HEAP=128mb
 ```
