@@ -64,10 +64,28 @@ function install_sdl_macos {
   mkdir -p ~/Library/Frameworks
   echo "Installing framework:" "/Volumes/SDL2"/*.framework
   cp -rp "$VOLUME"/*.framework ~/Library/Frameworks
+  if [ -d "$VOLUME/optional" ]
+  then
+    echo "Installing optional framework:" "/Volumes/SDL2/optional"/*.framework
+    cp -rp "$VOLUME"/optional/*.framework ~/Library/Frameworks
+  fi
   hdiutil detach "$VOLUME"
 }
 
 function install_sdl_android {
+  local MODULE=$1
+  local VERSION=$2
+  local DIRNAME=deps/$MODULE-$VERSION
+  local FILENAME=$DIRNAME.tar.gz
+  if [ ! -f "$FILENAME" ]
+  then
+    get_sdl_lib_url $MODULE $VERSION "tar.gz"
+    curl -o "$FILENAME" "$SDL_LIB_URL"
+  fi
+  tar -zxf $FILENAME -C ext/SDL2
+}
+
+function install_sdl_ios {
   local MODULE=$1
   local VERSION=$2
   local DIRNAME=deps/$MODULE-$VERSION
@@ -100,6 +118,10 @@ then
   then
     install_sdl_android "SDL2" $SDL_VERSION
     install_sdl_android "SDL2_mixer" $SDL_MIXER_VERSION
+  elif [ "$BUILD_TARGET" == "ios" ]
+  then
+    install_sdl_ios "SDL2" $SDL_VERSION
+    install_sdl_ios "SDL2_mixer" $SDL_MIXER_VERSION
   else
     if [ "$BUILD_TARGET" == "emscripten" ]
     then

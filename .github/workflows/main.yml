@@ -14,22 +14,22 @@ jobs:
       matrix:
         include:
           - name: Linux Flatpak
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             BUILD_TARGET: flatpak
             DEPLOY: flatpak
           - name: Linux AppImage
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             BUILD_TARGET: appimage
             DEPLOY: appimage
           - name: Linux x64
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             cache-key: linux-x64
-            SDL_VERSION: 2.26.4
-            SDL_MIXER_VERSION: 2.6.2
+            SDL_VERSION: 2.32.8
+            SDL_MIXER_VERSION: 2.8.1
             BUILD_TARGET: linux
             DEPLOY: linux
           - name: Linux x64 (old SDL versions)
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             cache-key: linux-x64
             SDL_VERSION: 2.0.0
             SDL_MIXER_VERSION: 2.0.0
@@ -39,23 +39,30 @@ jobs:
           - name: macOS
             os: macos-latest
             cache-key: macos
-            SDL_VERSION: 2.26.4
-            SDL_MIXER_VERSION: 2.6.2
+            SDL_VERSION: 2.32.8
+            SDL_MIXER_VERSION: 2.8.1
             BUILD_TARGET: mac
             DEPLOY: mac
+          - name: iOS
+            os: macos-latest
+            cache-key: ios
+            SDL_VERSION: 2.32.8
+            SDL_MIXER_VERSION: 2.8.1
+            BUILD_TARGET: ios
+            DEPLOY: ios
           - name: Nintendo Switch
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             BUILD_TARGET: switch
             DEPLOY: switch
           - name: PS Vita
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             BUILD_TARGET: vita
             DEPLOY: vita
           - name: Android
-            os: ubuntu-20.04
+            os: ubuntu-22.04
             cache-key: android
-            SDL_VERSION: 2.26.4
-            SDL_MIXER_VERSION: 2.6.2
+            SDL_VERSION: 2.32.8
+            SDL_MIXER_VERSION: 2.8.1
             BUILD_TARGET: android
             DEPLOY: android
           - name: Emscripten
@@ -82,6 +89,12 @@ jobs:
         with:
           path: deps
           key: ${{ matrix.cache-key }}-${{ env.SDL_VERSION }}-${{ env.SDL_MIXER_VERSION }}
+      - name: Setup JDK 17
+        if: matrix.BUILD_TARGET == 'android'
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
       - name: Set up environment
         env:
           FILE_ENCRYPTION_IV: ${{ secrets.FILE_ENCRYPTION_IV }}
@@ -125,8 +138,8 @@ jobs:
     name: ${{ matrix.name }}
     runs-on: windows-latest
     env:
-      SDL_VERSION: 2.26.4
-      SDL_MIXER_VERSION: 2.6.2
+      SDL_VERSION: 2.32.8
+      SDL_MIXER_VERSION: 2.8.1
       COMPILER: ${{ matrix.COMPILER }}
       SKIP_UPLOAD: ${{ matrix.SKIP_UPLOAD }}
     steps:
